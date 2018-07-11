@@ -1,0 +1,14 @@
+{% if driver == 'ldap' %}
+server_host = {{ postfix_ldap_server_host }}
+server_port = {{ postfix_ldap_server_port }}
+search_base = {{ ldap_search_base | default(postfix_ldap_search_base) }}
+query_filter = {{ ldap_query_filter }}
+result_attribute = {{ ldap_result_attribute }}
+result_format = {{ ldap_result_format }}
+{% elif driver == 'mysql' %}
+hosts = {{ postfix_sql_host }}
+user = {{ postfix_sql_user }}
+password = {{ postfix_sql_password }}
+dbname = {{ postfix_sql_database }}
+query = {{ sql_query }}
+{% endif %}

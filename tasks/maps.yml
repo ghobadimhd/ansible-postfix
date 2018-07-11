@@ -1,0 +1,83 @@
+---
+
+- name: create postfix maps directory
+  file:
+    path: "{{ postfix_maps_dir }}"
+    state: directory
+
+
+- name: "create and configure virtual domains maps"
+  template:
+    src: common_maps.j2
+    dest: "{{ postfix_maps_dir }}/vdomains-{{ driver }}"
+    group: postfix
+  vars:
+    driver: "{{ vdomains_driver }}"
+    ldap_search_base: "ldap_search_base"
+    ldap_query_filter: "{{ vdomains_ldap_query_filter }}"
+    ldap_result_attribute: "{{ vdomains_ldap_result_attribute }}"
+    ldap_result_format: "{{ vdomains_ldap_result_format }}"
+    sql_query: "{{ vdomains_sql_query }}"
+  when: vdomains_enable and vdomains_driver != 'maincf'
+  notify: postfix reload
+
+
+- name: "create and configure virtual mailboxes maps"
+  template:
+    src: common_maps.j2
+    dest: "{{ postfix_maps_dir }}/vmail-{{ driver }}"
+    group: postfix
+  vars:
+    driver: "{{ vmail_driver }}"
+    ldap_search_base: "vmail_ldap_search_base"
+    ldap_query_filter: "{{ vmail_ldap_query_filter }}"
+    ldap_result_attribute: "{{ vmail_ldap_result_attribute }}"
+    ldap_result_format: "{{ vmail_ldap_result_format }}"
+    sql_query: "{{ vmail_sql_query }}"
+  when: vmail_enable
+  notify: postfix reload
+
+
+- name: "create and configure virtual domain aliases maps"
+  template:
+    src: common_maps.j2
+    dest: "{{ postfix_maps_dir }}/valias_domains-{{ driver }}"
+    group: postfix
+  vars:
+    driver: "{{ valias_domains_driver }}"
+    ldap_search_base: "ldap_search_base"
+    ldap_query_filter: "{{ valias_domains_ldap_query_filter }}"
+    ldap_result_attribute: "{{ valias_domains_ldap_result_attribute }}"
+    ldap_result_format: "{{ valias_domains_ldap_result_format }}"
+    sql_query: "{{ valias_domains_sql_query }}"
+  when: valias_domains_enable and valias_domains_driver != 'maincf'
+  notify: postfix reload
+
+
+- name: "create and configure virtual alias maps"
+  template:
+    src: common_maps.j2
+    dest: "{{ postfix_maps_dir }}/valias_maps-{{ driver }}"
+    group: postfix
+  vars:
+    driver: "{{ valias_maps_driver }}"
+    ldap_search_base: "ldap_search_base"
+    ldap_query_filter: "{{ valias_maps_ldap_query_filter }}"
+    ldap_result_attribute: "{{ valias_maps_ldap_result_attribute }}"
+    ldap_result_format: "{{ valias_maps_ldap_result_format }}"
+    sql_query: "{{ valias_maps_sql_query }}"
+  when: valias_maps_enable
+  notify: postfix reload
+
+- name: cleaning maps directory
+  file:
+    state: absent
+    name: "{{item}}"
+  loop: "{{ lookup('fileglob', postfix_maps_dir + '/*')
+    | difference(
+
+    ['{0}/{1}-{2}'.format(postfix_maps_dir, 'vdomains', vdomains_driver),
+     '{0}/{1}-{2}'.format(postfix_maps_dir, 'vmail', vmail_driver),
+     '{0}/{1}-{2}'.format(postfix_maps_dir, 'valias_domains', valias_domains_driver),
+     '{0}/{1}-{2}'.format(postfix_maps_dir, 'valias_maps', valias_maps_driver)]) }}"
+
