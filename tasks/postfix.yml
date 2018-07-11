@@ -1,0 +1,44 @@
+---
+
+- name: load distribuion specific variabales
+  include_vars: "vars/{{ ansible_os_family }}.yml"
+
+
+- name: install packages
+  package:
+    state: present
+    name: "{{ packages }}"
+
+- name: create virtual user
+  user:
+    name: "{{ vmail_user }}"
+    state: present
+  register: vmail_user_info
+  when: vmail_enable
+
+- name: create virtual mailbox base
+  file:
+    path: "{{ vmail_base }}"
+    state: directory
+    mode: "0777"
+    owner: "{{ vmail_user }}"
+    group: "{{ vmail_user }}"
+  when: vmail_enable
+
+- name: configure postfix master.cf
+  template:
+    src: master.cf.j2
+    dest: "{{ postfix_master_cf }}"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify: restart postfix
+
+- name: configure postfix main.cf
+  template:
+    src: main.cf
+    dest: /etc/postfix/main.cf.j2
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify: restart postfix
