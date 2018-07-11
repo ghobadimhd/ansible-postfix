@@ -1,0 +1,14 @@
+---
+# tasks file for ghobadimhd.postfix
+
+- name: Configure Postfix
+  include_tasks: postfix.yml
+
+- name: Configure postfix maps
+  include_tasks: maps.yml
+
+- name: Smtpd SASL
+  include_tasks: smtpd_sasl.yml
+  when:  smtpd_sasl_enable
+
+
