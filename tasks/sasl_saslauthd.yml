@@ -1,0 +1,18 @@
+---
+- name: config saslauthd
+  template:
+    src: sasl/saslauthd-postfix
+    dest: /etc/default/saslauthd-postfix
+  notify: restart saslauthd
+
+- name: create chroot path
+  file:
+    state: directory
+    path: "{{ postfix_chroot_run_dir }}"
+
+- name: add postfix to sasl group
+  user:
+    append: yes
+    name: postfix
+    groups: sasl
+  notify: restart postfix

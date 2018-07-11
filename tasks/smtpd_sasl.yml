@@ -1,0 +1,21 @@
+---
+- name: create sasl config directory
+  file:
+    state: directory
+    path: "{{ postfix_sasl_dir }}"
+
+- name: config postfix sasl
+  template:
+    src: sasl/smtpd.conf
+    dest: /etc/postfix/sasl/smtpd.conf
+  notify: restart saslauthd
+
+- name: Create and configure sender login mismatch
+  template:
+    src: sasl/sender_login_maps
+    dest: "{{ postfix_sender_login_maps }}"
+    owner: postfix
+    group: postfix
+
+- include_tasks: sasl_saslauthd.yml
+  when: smtpd_sasl_backend == 'pam'
