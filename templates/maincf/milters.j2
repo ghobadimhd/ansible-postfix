@@ -1,0 +1,8 @@
+{% if milters_enable | default(False) %}
+{{ 'Milters' | comment }}
+milter_protocol = {{ milter_protocol | default(6) }}
+milter_default_action = {{ milter_default_action | default('tempfail')}}
+smtpd_milters = {{ smtpd_milters }}
+non_smtpd_milters = {{ non_smtpd_milters }}
+
+{% endif -%}

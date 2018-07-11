@@ -1,0 +1,15 @@
+---
+# vars file for ghobadimhd.postfix
+
+postfix_alias_file: /etc/aliases
+postfix_base_dir: /etc/postfix
+postfix_saslauthd_config_file: /etc/default/saslauthd-postfix
+postfix_sasl_dir: "{{ postfix_base_dir }}/sasl"
+postfix_main_cf: "{{ postfix_base_dir }}/main.cf"
+postfix_master_cf: "{{ postfix_base_dir }}/master.cf"
+postfix_main: "{{ postfix_base_dir }}/master.cf"
+postfix_sasl_config_file: "{{ postfix_base_dir }}/sasl/smtpd.conf"
+vdomians_maps_file: "{{ postfix_base_dir }}/virtual_domains_maps"
+postfix_chroot_run_dir: "/var/spool/postfix/var/run/"
+postfix_maps_dir: "{{ postfix_base_dir }}/maps"
+postfix_sender_login_maps: "{{ postfix_base_dir }}/sender_login_maps.regexp"

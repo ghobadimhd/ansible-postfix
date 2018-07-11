@@ -1,0 +1,7 @@
+{% if smtp_tls_enable %}
+{{ 'Smtp TLS' (client-side) | comment }}
+smtp_use_tls = yes
+smtp_tls_CAfile = {{ smtp_tls_cafile }}
+smtp_tls_loglevel = {{ smtp_tls_loglevel }}
+
+{% endif -%}

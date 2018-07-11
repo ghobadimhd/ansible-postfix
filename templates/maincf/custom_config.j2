@@ -1,0 +1,3 @@
+{% for item in postfix_custom_config | default([]) %}
+{{ item | dict_key }} = {{ item | dict_value }}
+{% endfor %}

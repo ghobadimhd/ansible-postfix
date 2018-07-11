@@ -1,0 +1,11 @@
+---
+postfix_chroot: y
+saslauthd_config_file: /etc/default/saslauthd-postfix
+packages:
+  - postfix
+  - postfix-ldap
+  - postfix-mysql
+  - libsasl2-2
+  - libsasl2-modules
+  - sasl2-bin
+  - libsasl2-modules-sql

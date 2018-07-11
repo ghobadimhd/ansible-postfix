@@ -1,0 +1,10 @@
+{% if use_lmtp %}
+{{ 'LMTP' | comment }}
+{% if mailbox_lmtp %}
+mailbox_transport = {{ lmtp_path }}
+{% endif %}
+{% if virtual_lmtp %}
+virtual_transport = {{ lmtp_path }}
+{% endif %}
+
+{% endif -%}

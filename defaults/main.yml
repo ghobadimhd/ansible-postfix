@@ -1,0 +1,131 @@
+---
+# defaults file for ghobadimhd.postfix
+
+mydomain: "{{ ansible_domain }}"
+myhostname: "{{ ansible_fqdn }}"
+myorigin: "{{ myhostname }}"
+mydestination: "localhost 127.0.0.1 $myhostname $myhostname.$mydomain $myhostname.localdomain"
+relay_domains: "$mydestination"
+mynetworks: "127.0.0.0/8 {% for address in ansible_all_ipv4_addresses %} {{ address }} {% endfor %}"
+alias_file: /etc/aliases
+smtpd_helo_required: "yes"
+smtpd_milters: inet:localhost:12301
+non_smtpd_milters: inet:localhost:12301
+submission_enable: false
+
+############################ SMTP TLS RESTRICTS
+recipient_restricts_enable: false
+smtpd_rbl_check_enable: false
+rbl_hosts:
+  - zen.spamhaus.org
+
+############################ SMTP TLS
+smtp_tls_enable: false
+smtp_tls_loglevel: 1
+smtp_tls_cafile: /etc/ssl/certs/ca-certificates.crt
+
+############################ SMTPD TLS
+smtpd_tls_enable: false
+smtpd_tls_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
+# may, never, encrypt
+smtpd_tls_security_level: may
+
+############################ LMTP
+# use lmtp for mailbox or virtual delivery (default is to use dovecot delivery)
+use_lmtp: false
+lmtp_path: lmtp:unix:private/dovecot-lmtp
+mailbox_lmtp: yes
+virtual_lmtp: yes
+
+############################ LDA
+# use alternative lda ( default is to use dovecot-lda)
+use_lda: no
+lda_command: '/usr/lib/dovecot/dovecot-lda -f "$SENDER" -a "$RECIPIENT"'
+
+########################### sql setting
+# common sql parameter that used in maps and sasl plugins
+# only mysql driver tested
+postfix_sql_driver: mysql
+# if localhost used in sql_host , plugin use unix socket to connect
+# and probably fail to connect (because postfix is in jail)
+postfix_sql_host: 127.0.0.1
+postfix_sql_database: vmail
+postfix_sql_user: postfix
+postfix_sql_password: postfix
+
+########################### ldap setting
+# common ldap parameter that used in maps and sasl plugins
+postfix_ldap_server_host: localhost
+postfix_ldap_server_port: 389
+postfix_ldap_search_base: "ou=users,ou={{ ansible_hostname }},dc={{ ansible_domain }}"
+
+############################ SASL
+# true, false
+smtpd_sasl_enable: false
+# sql, ldap, dovecot, sasldb, pam
+smtpd_sasl_backend: pam
+smtpd_sasl_sql_select: select password from users where username = '%u' and domain = '%r'
+# ldap
+smtpd_sasl_ldap_uri: ldap://localhost
+smtpd_sasl_ldap_user: postfix
+smtpd_sasl_ldap_password: postfix
+smtpd_sasl_ldap_mech: DIGEST-MD5
+# dovecot auth service path
+smtpd_sasl_dovecot_path: private/dovecot-auth
+
+############################ Virtual domains
+# true, false
+vdomains_enable: false
+# only useful for maincf driver
+vdomains: []
+# should be hash, mysql, maincf
+vdomains_driver: hash
+# sql
+vdomains_sql_query: select domain from users where domain = '%s'
+# ldap
+vdomains_ldap_search_base: "ou=users,ou={{ ansible_hostname }},dc={{ ansible_domain }}"
+vdomains_ldap_query_filter: domain=%s
+vdomains_ldap_result_format: "%d"
+vdomains_ldap_result_attribute: uid
+
+############################ Virtual Mailboxes
+# true, false
+vmail_enable: false
+# should be false, hash, ldap, mysql
+vmail_driver: hash
+vmail_base: /var/mail/virtual-mailboxes
+vmail_user: vmail
+# sql
+vmail_mysql_query: select mailbox from users where username = %u and domain = %d
+# ldap
+vmail_ldap_search_base: "ou=users,ou={{ ansible_hostname }},dc={{ ansible_domain }}"
+vmail_ldap_query_filter: uid=%s
+vmail_ldap_result_format: "%d.%u"
+vmail_ldap_result_attribute: uid
+
+########################## virtual alias domains
+valias_domains_enable: false
+# should be hash, mysql, maincf
+valias_domains_driver: hash
+# only useful for maincf driver
+valias_domains: []
+# sql
+valias_domains_sql_query: select domain from users
+# ldap
+valias_domains_ldap_search_base: "ou=users,ou={{ ansible_hostname }},dc={{ ansible_domain }}"
+valias_domains_ldap_query_filter: domain=%s
+valias_domains_ldap_result_format: "%d"
+valias_domains_ldap_result_attribute: uid
+
+######################## virtual alias maps
+valias_maps_enable: false
+# should be hash, mysql
+valias_maps_driver: hash
+# sql
+valias_maps_sql_query: select concat_ws('@', username, domain) as email from valias where alias_username = '%u' and alias_domain = '%d'
+# ldap
+valias_maps_ldap_search_base: "ou=users,ou={{ ansible_hostname }},dc={{ ansible_domain }}"
+valias_maps_ldap_query_filter: domain=%s
+valias_maps_ldap_result_format: "%d"
+valias_maps_ldap_result_attribute: uid

@@ -1,0 +1,11 @@
+{% if valias_maps_enable %}
+{{ 'Virtual alias maps' | comment }}
+{% if valias_maps_driver == 'sql' %}
+virtual_alias_maps = {{ postfix_sql_driver }}:/etc/postfix/maps/valias_maps-{{ valias_maps_driver }}
+{% elif valias_maps_driver == 'ldap' %}
+virtual_alias_maps = ldap:/etc/postfix/maps/valias_maps-{{ valias_maps_driver }}
+{% else %}
+virtual_alias_maps = {{ valias_maps_driver }}:/etc/postfix/maps/valias_maps-{{ valias_maps_driver }}
+{% endif %}
+
+{% endif -%}

@@ -1,0 +1,15 @@
+{% if valias_domains_enable %}
+{{ 'Virtual alias domians' | comment }}
+{% if valias_domains_driver == 'sql' %}
+virtual_alias_domains = {{ postfix_sql_driver }}:/etc/postfix/maps/valias_domains-{{ valias_domains_driver }}
+{% elif valias_domains_driver == 'ldap' %}
+virtual_alias_domains = ldap:/etc/postfix/maps/valias_domains-{{ valias_domains_driver }}
+{% elif valias_domains_driver == 'maincf' %}
+virtual_alias_domains = {% for item in valias_domains %}
+	{{ item }}
+{% endfor %}
+{% else %}
+virtual_alias_domains = {{ valias_domains_driver }}:/etc/postfix/maps/valias_domains-{{ valias_domains_driver }}
+{% endif %}
+
+{% endif -%}

@@ -1,0 +1,7 @@
+{% if smtpd_tls_enable %}
+{{ 'Smtpd TLS (server-side)' | comment }}
+smtpd_tls_cert_file = {{ smtpd_tls_cert_file }}
+smtpd_tls_key_file = {{ smtpd_tls_key_file }}
+smtpd_tls_security_level = {{ smtpd_tls_security_level }}
+
+{% endif -%}

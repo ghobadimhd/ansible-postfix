@@ -1,0 +1,18 @@
+---
+postfix_chroot: n
+saslauthd_config_file: /etc/default/saslauthd
+packages:
+  - postfix
+  - cyrus-sasl
+  - cyrus-sasl
+  - cyrus-sasl-ldap
+  - cyrus-sasl-ldap
+  - cyrus-sasl-ntlm
+  - cyrus-sasl-ntlm
+  - cyrus-sasl-plain
+  - cyrus-sasl-plain
+  - cyrus-sasl-sql
+  - cyrus-sasl-sql
+
+
+

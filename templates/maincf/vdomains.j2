@@ -1,0 +1,15 @@
+{% if vdomains_enable %}
+{{ 'Virtual domians' | comment }}
+{% if vdomains_driver == 'sql' %}
+virtual_mailbox_domains = {{ postfix_sql_driver }}:/etc/postfix/maps/vdomains-{{ vdomains_driver }}
+{% elif vdomains_driver == 'ldap' %}
+virtual_mailbox_domains = ldap:/etc/postfix/maps/vdomains-{{ vdomains_driver }}
+{% elif vdomains_driver == 'maincf' %}
+virtual_mailbox_domains = {% for item in vdomains %}
+	{{ item }}
+{% endfor %}
+{% else %}
+virtual_mailbox_domains = {{ vdomains_driver }}:/etc/postfix/maps/vdomains-{{ vdomains_driver }}
+{% endif %}
+
+{% endif -%}

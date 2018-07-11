@@ -1,0 +1,26 @@
+{{ 'base config' | comment }}
+{% if mydomain != '' %}
+mydomain = {{ mydomain }}
+{% endif %}
+myhostname = {{ myhostname }}
+mynetworks = {{ mynetworks }}
+myorigin = {{ myorigin }}
+mydestination = {{ mydestination }}
+relay_domains = {{ relay_domains }}
+alias_maps = hash:{{ alias_file }}
+alias_database = hash:{{ alias_file }}
+smtpd_helo_required = {{ smtpd_helo_required }}
+
+{% include 'maincf/lda.j2' %}
+{% include 'maincf/lmtp.j2' %}
+{% include 'maincf/smtp_tls.j2' %}
+{% include 'maincf/smtpd_tls.j2' %}
+{% include 'maincf/restrictions.j2' %}
+{% include 'maincf/milters.j2' %}
+{% include 'maincf/smtpd_sasl.j2' %}
+{% include 'maincf/valias_domains.j2' %}
+{% include 'maincf/valias_maps.j2' %}
+{% include 'maincf/vdomains.j2' %}
+{% include 'maincf/vmail.j2' %}
+{% include 'maincf/custom_config.j2' %}
+

@@ -1,0 +1,5 @@
+{% if use_lda %}
+{{ 'Dovecot LDA' | comment }}
+mailbox_command = {{ lda_command }}
+
+{% endif -%}

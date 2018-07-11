@@ -1,0 +1,14 @@
+{% if vmail_enable %}
+{{ 'Virtual mailboxes' | comment }}
+virtual_uid_maps = static:{{ vmail_user_info.uid }}
+virtual_gid_maps = static:{{ vmail_user_info.group }}
+virtual_mailbox_base = {{  vmail_base }}
+{% if vmail_driver == 'sql' %}
+virtual_mailbox_maps = {{ postfix_sql_driver }}:/etc/postfix/maps/vmail-{{ vmail_driver }}
+{% elif vmail_driver == 'ldap' %}
+virtual_mailbox_maps = ldap:/etc/postfix/maps/vmail-{{ vmail_driver }}
+{% else %}
+virtual_mailbox_maps = {{ vmail_driver }}:/etc/postfix/maps/vmail-{{ vmail_driver }}
+{% endif %}
+
+{% endif -%}

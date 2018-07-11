@@ -1,0 +1,32 @@
+{% if recipient_restricts_enable %}
+{{ 'smtpd recipient restrictions' | comment }}
+
+smtpd_recipient_restrictions =
+        reject_non_fqdn_sender,
+        reject_non_fqdn_recipient,
+        reject_unknown_sender_domain,
+        reject_unknown_recipient_domain,
+        permit_mynetworks,
+        permit_sasl_authenticated,
+        reject_unauth_destination
+        reject_unauth_pipelining,
+        reject_invalid_helo_hostname,
+        reject_non_fqdn_helo_hostname,
+        reject_invalid_hostname,
+{% if smtpd_rbl_check_enable %}
+        {% for address in rbl_hosts %}
+        reject_rbl_client address,
+        {% endfor %}
+{% endif %}
+        permit
+{% endif -%}
+
+{{ 'SASL sender login restrictions' | comment }}
+{% if smtpd_sasl_enable %}
+smtpd_sender_login_maps = regexp:{{ postfix_sender_login_maps }}
+{% endif %}
+{% if smtpd_sasl_enable %}
+
+smtpd_sender_restrictions =
+        reject_authenticated_sender_login_mismatch
+{% endif -%}
