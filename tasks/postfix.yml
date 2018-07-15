@@ -37,7 +37,7 @@
 - name: configure postfix main.cf
   template:
     src: main.cf.j2
-    dest: /etc/postfix/main.cf.j2
+    dest: "{{ postfix_main_cf }}"
     owner: root
     group: root
     mode: u=rw,g=r,o=r
