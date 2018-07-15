@@ -21,8 +21,8 @@ smtpd_recipient_restrictions =
         permit
 {% endif -%}
 
-{{ 'SASL sender login restrictions' | comment }}
 {% if smtpd_sasl_enable %}
+{{ 'SASL sender login restrictions' | comment }}
 smtpd_sender_login_maps = regexp:{{ postfix_sender_login_maps }}
 {% endif %}
 {% if smtpd_sasl_enable %}
