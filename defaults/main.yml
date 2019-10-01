@@ -9,6 +9,7 @@ relay_domains: "$mydestination"
 mynetworks: "127.0.0.0/8 {% for address in ansible_all_ipv4_addresses %} {{ address }} {% endfor %}"
 alias_file: /etc/aliases
 smtpd_helo_required: "yes"
+milters_enable: no
 smtpd_milters: inet:localhost:12301
 non_smtpd_milters: inet:localhost:12301
 submission_enable: false
